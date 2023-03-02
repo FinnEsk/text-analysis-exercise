@@ -30,6 +30,36 @@ public class App {
 
     // complete this function according to the instructions
 
+
+    String filepath = getFilepathFromUser();
+    String fileContents = getContentsOfFile(filepath);
+    String[] tics = getTicsFromUser();
+
+
+    int[] occur_arr = new int[tics.length];
+      
+    for (int i = 0; i < tics.length; i++){
+      occur_arr[i] = countOccurrences(tics[i], fileContents);
+    }
+
+    int tic_sum = 0;
+    for (int i = 0; i < tics.length; i++){
+      tic_sum += occur_arr[i];
+    }
+
+    System.out.println("...............................Analyzing text.................................");
+    System.out.println("\nTotal number of tics: " + tic_sum);
+    System.out.println("Density of tics: " + calculateTicDensity(tics, fileContents));
+    System.out.println("\n...............................Tic breakdown..................................\n");
+
+    for (int i = 0; i < tics.length; i++){
+      String formattedTic = String.format("&10s", tics[i]);
+      String occ = (occur_arr[i] + "occurrences");
+      String formattedOcc = String.format("&20s", occ);
+
+      System.out.print(formattedTic + formattedOcc + calculatePercentage(occur_arr[i], tic_sum) + "% of all tics");
+    }
+
   }
 
   /**
@@ -41,7 +71,9 @@ public class App {
    * @return The file path that the user enters, e.g. "data/trump_speech_010621.txt"
    */
   public static String getFilepathFromUser() {
-
+    String filepath = scn.nextLine();
+    System.out.println("What file would yo like to open");
+    return filepath;
     // complete the getFilepathFromUser function according to the instructions above
 
   }
@@ -87,6 +119,17 @@ public class App {
 
     // write the getTicsFromUser function according to the instructions
 
+  public static String[] getTicsFromUser(){
+    String tics_arr[];
+    System.out.println("What words would you like to search for?");
+    String input = scn.nextLine();
+    tics_arr = input.split(",");
+    for (int i = 0; i < tics_arr.length; i ++){
+      tics_arr[i] = tics_arr[i].trim();
+    }
+    return tics_arr; 
+  }
+
 
  /**
    * countOccurrences method
@@ -98,6 +141,21 @@ public class App {
 
     // write the countOccurrences function according to the instructions
 
+  public static int countOccurrences(String needle, String haystack){
+    int count = 0;
+    needle = needle.toLowerCase();
+    haystack = haystack.toLowerCase();
+
+    String[] haystack_arr = haystack.split("[.,?!-]+");
+    
+    for (int i = 0; i < haystack.length(); i++){
+      if (haystack_arr[i].equals(needle)){
+        count ++;
+      }
+    }
+    return count;
+  }
+
   /**
    * calculatePercentage method
    * Calculates the equivalent percentage from the proportion of one number to another number.
@@ -107,6 +165,12 @@ public class App {
    */
 
     // write the calculatePercentage function according to the instructions above
+  
+    public static long calculatePercentage(int num1, int num2){
+      double perc = num1/num2;
+      long percentage = Math.round((perc*100));
+      return percentage;
+    }
 
 
   /**
@@ -123,6 +187,23 @@ public class App {
 
     // write the calculateTicDensity function according to the instructions above
 
-    
+    public static double calculateTicDensity(String[] tics, String fullText){
+      
+      int[] count_arr = new int[tics.length];
+      
+      for (int i = 0; i < tics.length; i++){
+        count_arr[i] = countOccurrences(tics[i], fullText);
+      }
+
+      int tic_sum = 0;
+      for (int i = 0; i < tics.length; i++){
+        tic_sum += count_arr[i];
+      }
+      double density = tic_sum / (fullText.length());
+
+      double rounded_denisty = Math.round(density*100)/100;
+      return rounded_denisty;
+    }
+  
 
 } // end of class
